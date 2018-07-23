@@ -1,6 +1,7 @@
 import StepLists
 import RPi.GPIO as GPIO
 import time
+from Threader import TaskQueue
 
 ForwardSteps = StepLists.ForwardSteps
 BackwardSteps = StepLists.BackwardSteps
@@ -12,10 +13,10 @@ class Stepper(object):
     def __init__(self, pins):
         self.pins = pins
         self.xPos = 0
+        self.q = TaskQueue(1)
 
     def moveTo(self, targetPos):
         direction = self.determineDirection(targetPos)
-        print direction
         self.moveForwardTo( targetPos) if direction == 'forward' else self.moveBackwardTo(targetPos)
 
     def determineDirection(self, targetPos):
@@ -46,7 +47,3 @@ class Stepper(object):
                 GPIO.output(self.pins[ind], True)
             else:
                 GPIO.output(self.pins[ind], False)
-
-def registerStepper(pins):
-    stepper = Stepper(pins)
-    return stepper
