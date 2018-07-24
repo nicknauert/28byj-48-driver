@@ -6,22 +6,24 @@ class TaskQueue(Queue.Queue):
     def __init__(self, num_workers=1):
         Queue.Queue.__init__(self)
         self.num_workers = num_workers
-        self.start_workers()
+        print 'Initiated TQ with ' + str(num_workers) + ' workers'
+        self.startWorkers()
     
-    def add_task(self, task, *args, **kwargs):
+    def addTask(self, task, *args, **kwargs):
         args = args or ()
         kwargs = kwargs or {}
         self.put((task, args, kwargs))
     
-    def start_workers(self):
+    def startWorkers(self):
+        print 'STARTING WORKER'
         for i in range(self.num_workers):
             t = Thread(target=self.worker)
+            print '>> Added new thread'
             t.daemon = True
             t.start()
 
     def worker(self):
         while True:
-            tupl = self.get()
             item, args, kwargs = self.get()
             item(*args, **kwargs) 
             self.task_done()
@@ -34,7 +36,7 @@ class TaskQueue(Queue.Queue):
 #     q = TaskQueue(num_workers=5)
 
 #     for item in range(10):
-#         q.add_task(blokkah)
+#         q.addTask(blokkah)
 
 #     q.join()       # block until all tasks are done
 #     print "All done!"

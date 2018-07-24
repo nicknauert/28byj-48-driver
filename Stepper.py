@@ -1,28 +1,36 @@
 import StepLists
 import RPi.GPIO as GPIO
 import time
-from Threader import TaskQueue
 
 ForwardSteps = StepLists.ForwardSteps
 BackwardSteps = StepLists.BackwardSteps
 
-class Stepper(object):
-    pins = None
-    xPos = 0
-
+class Stepper():
+    
     def __init__(self, pins):
         self.pins = pins
         self.xPos = 0
-        self.q = TaskQueue(1)
+        self.partOfQueue = False
+        self.queue = None
+
+    def assignToQueue(self, queue, group):
+        self.q = queue
+        self.group = group
+        self.partOfQueue = True
 
     def moveTo(self, targetPos):
-        direction = self.determineDirection(targetPos)
-        self.moveForwardTo( targetPos) if direction == 'forward' else self.moveBackwardTo(targetPos)
+        steps = self.determineDirection(targetPos)
+        while self.xPos != targetPos:
+            if self.partOfQueue:
+                self.group.queueTask(self.tick, steps)
+            else:
+                self.tick(steps)
 
     def determineDirection(self, targetPos):
-        return 'forward' if targetPos > self.xPos else 'backward'
+        return ForwardSteps if targetPos > self.xPos else BackwardSteps
 
     # Directional tick functions
+
     def moveForwardTo(self, targetPos):
         while self.xPos != targetPos:
             self.tick(ForwardSteps)
@@ -34,6 +42,7 @@ class Stepper(object):
     def tick(self, moveList, currentStep = 0):
         numberOfSteps = len(moveList) - 1
         while currentStep != numberOfSteps:
+            print currentStep
             self.performSingleStep(moveList[currentStep])
             # Wait a bit
             time.sleep(0.0015)
