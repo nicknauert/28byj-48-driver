@@ -12,17 +12,18 @@ class Stepper():
         self.xPos = 0
         self.partOfQueue = False
         self.queue = None
+        self.addTask = None
 
-    def assignToQueue(self, queue, group):
+    def assignToQueue(self, queue, addTask):
         self.q = queue
-        self.group = group
+        self.addTask = addTask
         self.partOfQueue = True
 
     def moveTo(self, targetPos):
         steps = self.determineDirection(targetPos)
         while self.xPos != targetPos:
             if self.partOfQueue:
-                self.group.queueTask(self.tick, steps)
+                self.addTask(self.tick, steps)
             else:
                 self.tick(steps)
 
@@ -30,22 +31,12 @@ class Stepper():
         return ForwardSteps if targetPos > self.xPos else BackwardSteps
 
     # Directional tick functions
-
-    def moveForwardTo(self, targetPos):
-        while self.xPos != targetPos:
-            self.tick(ForwardSteps)
-
-    def moveBackwardTo(self, targetPos):
-        while self.xPos != targetPos:
-            self.tick(BackwardSteps)
-
     def tick(self, moveList, currentStep = 0):
         numberOfSteps = len(moveList) - 1
         while currentStep != numberOfSteps:
-            print currentStep
             self.performSingleStep(moveList[currentStep])
             # Wait a bit
-            time.sleep(0.0015)
+            time.sleep(0.0025)
             currentStep += 1
         else:
             self.xPos = self.xPos + 1 if moveList == ForwardSteps else self.xPos - 1

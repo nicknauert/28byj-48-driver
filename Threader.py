@@ -18,15 +18,16 @@ class TaskQueue(Queue.Queue):
         print 'STARTING WORKER'
         for i in range(self.num_workers):
             t = Thread(target=self.worker)
-            print '>> Added new thread'
+            print '>> Added new thread ' + str(t)
             t.daemon = True
             t.start()
 
     def worker(self):
         while True:
             item, args, kwargs = self.get()
-            item(*args, **kwargs) 
+            item(*args, **kwargs)
             self.task_done()
+            # print 'Task Done'
 
 # def tests():
 #     def blokkah(*args, **kwargs):

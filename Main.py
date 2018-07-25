@@ -32,15 +32,15 @@ group.readGroup()
 time.sleep(0.5)
 
 # Main program
-print 'MOVING > h to 200'
+# print 'MOVING > h to 200'
 Hori.moveTo(-200)
 # time.sleep(.5)
-print 'MOVING > v to 50'
+# print 'MOVING > v to 50'
 Vert.moveTo(50)
-group.joinTasks()
+# group.joinTasks()
 # time.sleep(1)
 print 'Resetting steppers'
-Vert.moveTo(0)
-Hori.moveTo(0)
+# Vert.moveTo(0)
+# Hori.moveTo(0)
 print 'Done'
-exit()
+# exit()
