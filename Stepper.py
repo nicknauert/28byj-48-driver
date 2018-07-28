@@ -14,10 +14,10 @@ class Stepper():
         self.queue = None
         self.addTask = None
 
-    def assignToQueue(self, queue, addTask):
-        self.q = queue
-        self.addTask = addTask
-        self.partOfQueue = True
+    # def assignToQueue(self, queue, addTask):
+    #     self.q = queue
+    #     self.addTask = addTask
+    #     self.partOfQueue = True
 
     def moveTo(self, targetPos):
         steps = self.determineDirection(targetPos)

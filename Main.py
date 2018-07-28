@@ -4,6 +4,9 @@ import time
 import RPi.GPIO as GPIO
 from Stepper import Stepper
 from StepperGroup import StepperGroup
+from threading import Thread
+from Threader import createThread, startThread, startAllThreads, clearThreads
+
 
 # Initiate IO
 GPIO.setwarnings(False)
@@ -25,22 +28,25 @@ steppers = [Hori, Vert]
 registerGPIO(HPins)
 registerGPIO(VPins)
 
-group = StepperGroup(steppers)
-group.readGroup()
-
 # Breathe
 time.sleep(0.5)
 
 # Main program
-# print 'MOVING > h to 200'
-Hori.moveTo(-200)
-# time.sleep(.5)
-# print 'MOVING > v to 50'
-Vert.moveTo(50)
-# group.joinTasks()
-# time.sleep(1)
-print 'Resetting steppers'
-# Vert.moveTo(0)
-# Hori.moveTo(0)
-print 'Done'
-# exit()
+createThread(Hori.moveTo, -300)
+createThread(Vert.moveTo, 150)
+startAllThreads()
+clearThreads()
+
+createThread(Vert.moveTo, -150)
+startAllThreads()
+clearThreads()
+
+createThread(Hori.moveTo, 100)
+startAllThreads()
+clearThreads()
+
+
+print('Resetting steppers')
+GPIO.cleanup()
+print('Done')
+
